@@ -1,28 +1,77 @@
+**Product Requirements Document (PRD)**
+
 # Esca - Web3 Escrow Platform on Sui
 
-<div align="center">
-  <img src="./docs/assets/logo.png" alt="Esca Logo" width="200" height="200">
-  
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-  [![Sui Network](https://img.shields.io/badge/Built%20on-Sui-blue)](https://sui.io/)
-  [![Next.js](https://img.shields.io/badge/Frontend-Next.js-black)](https://nextjs.org/)
-  [![Move](https://img.shields.io/badge/Smart%20Contracts-Move-purple)](https://move-book.com/)
-</div>
+## Problem Statement
 
-## 🌟 Overview
+In Web2 freelancing and peer-to-peer payments, escrow platforms charge high fees, suffer from slow dispute resolution, and often rely on centralized entities.
+In Web3, most transactions are trust-based (direct wallet transfers), which exposes users to scams, failed payments, and disputes.
+There’s no simple, low-fee, multi-asset escrow solution on Sui for everyday users.
+##  Overview
+**ESCA** is a decentralized escrow platform built on the Sui blockchain, enabling secure multi-asset transactions between parties. Our platform supports SUI tokens, USDC, NFTs, and on-chain objects, providing a comprehensive solution for trustless value exchange.
+Funds are only released when conditions are met: direct approval, verifier confirmation, or automated fallback.
+Supports gifting and freelancer payments.
+## Goals & Objectives
+- To Build a trustless escrow system.
+- Enable multi-asset support (coins, NFTs, objects).
+- Provide a modern, intuitive UI/UX for Web3 and non-crypto-native users.
+- Offer flexible release mechanisms (direct, verifier, time-based).
+## Core Features (MVP)
+- Vault Creation
+  • Create an escrow vault with assets (SUI, USDC, NFT, object).
+  • Define recipient, verifiers (optional), and expiry time.
 
-Esca is a decentralized escrow platform built on the Sui blockchain, enabling secure multi-asset transactions between parties. Our platform supports SUI tokens, USDC, NFTs, and on-chain objects, providing a comprehensive solution for trustless value exchange.
+- Vault Confirmation
+  • Verifiers can approve or reject the vault release.
+  • Recipient can see vault status.
 
-## 🚀 Features
+- Vault Release
+  • Direct release (sender approves).
+  • Multi-verifier release (signatures from verifiers).
+  • Auto-release after expiry if no dispute.
 
-- **Multi-Asset Support**: SUI, USDC, NFTs, and custom on-chain objects
-- **Secure Vault System**: Smart contract-powered escrow vaults
-- **Web3 Integration**: Seamless Sui Wallet Kit integration
-- **Modern UI/UX**: Built with Next.js, TailwindCSS, and shadcn/ui
-- **Arbitration System**: Optional dispute resolution mechanism
-- **Real-time Notifications**: Backend-powered notification system
+- Multi-Asset Support
+  • Native support for SUI, USDC, NFTs, objects.
 
-## 🏗️ Project Structure
+- Gifting & Payments
+  • Send vaults as gifts (coins + NFTs).
+  • Secure payments for freelancers and P2P trades.
+## Tech Stack
+- Smart Contracts: Move (Sui blockchain).
+- Frontend: Next.js (React + TypeScript), TailwindCSS, shadcn/ui.
+- Wallet Integration: Sui Wallet Kit.
+- Backend/Indexing (Optional): Supabase, Sui GraphQL API.
+- Deployment: Walrus (frontend), Sui testnet (contracts).
+
+## 5-Day Deliverables Roadmap
+**Day 1** – ***Foundation***
+- Define smart contract architecture (vault creation, release, dispute handling).
+- Write initial Move smart contract skeleton for Sui blockchain.
+- Set up GitHub repo + documentation structure.
+
+**Day 2** – ***Smart Contract Development***
+- Implement escrow vault creation & deposit function.
+- Implement vault release logic (direct, verifier-based, expiry fallback).
+- Write unit tests (on Sui testnet).
+
+**Day 3** – ***Frontend***
+- Build simple Next.js interface (connect wallet, create vault, view vaults).
+- Integrate Sui Wallet Kit.
+- Display vault status (active, released, expired).
+
+**Day 4** – ***Integration & Demo Flow***
+- Connect frontend with deployed smart contracts.
+- Test full demo flow:
+- Person A deposits → Person B notified → Verifier approves → Funds released.
+- Add multi-asset support (SUI, USDC, NFT, object).
+
+**Day 5** – ***Polish & Delivery***
+- Finalize UI (basic Tailwind styling).
+- Deploy frontend to Walrus, contracts to Sui testnet.
+- Prepare demo video + README.
+- Deliver packaged project (repo + docs + live demo link).
+
+## Project Structure
 
 ```
 Esca/
@@ -36,12 +85,6 @@ Esca/
 └── package.json
 ```
 
-## 🛠️ Tech Stack
-
-### Smart Contracts
-- **Move Language**: Sui blockchain smart contracts
-- **Sui CLI**: Development and deployment tools
-
 ### Frontend
 - **Next.js 14**: React framework with App Router
 - **TailwindCSS**: Utility-first CSS framework
@@ -52,15 +95,7 @@ Esca/
 ### Backend (Optional)
 - **Node.js**: JavaScript runtime
 - **Express.js**: Web framework
-- **MongoDB**: Database for notifications and arbitration
 - **WebSockets**: Real-time communication
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js 18+ and npm
-- Sui CLI installed
-- Git
 
 ### Installation
 
@@ -104,44 +139,30 @@ Esca/
    cd backend && npm run dev
    ```
 
-## 📖 Documentation
-
-- [Product Requirements Document](./docs/PRD.md)
-- [Smart Contract Documentation](./contracts/README.md)
-- [Frontend Development Guide](./frontend/README.md)
-- [Backend API Reference](./backend/README.md)
-- [Deployment Guide](./docs/DEPLOYMENT.md)
-
-## 👥 Team Collaboration
+## Team Collaboration
 
 This project is structured for collaborative development:
 
-- **Product Manager**: Focus on `/docs` for requirements and specifications
-- **Contract Engineer**: Work in `/contracts` for smart contract development
-- **Frontend Engineers**: Develop in `/frontend` with clear component separation
-- **Backend Engineer**: Build APIs in `/backend` for extended functionality
+- ***Matthew Okere***: **Product Manager** - Focus on `/docs` for requirements and specifications
+- ***Odunaye Abdulhafeez***: **Contract Engineer** - Work in `/contracts` for smart contract development
+- ***Asade Olawale Peter***: **Frontend Engineers** - Develop in `/frontend` with clear component separation
+- ***Muhammad Abdulazeez***: **Backend Engineer** - Build APIs in `/backend` for extended functionality
 
-## 🤝 Contributing
+##  Contributing
 
 Please read our [Contributing Guidelines](./docs/CONTRIBUTING.md) before submitting any pull requests.
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🔗 Links
 
-- [Sui Documentation](https://docs.sui.io/)
-- [Next.js Documentation](https://nextjs.org/docs)
-- [TailwindCSS Documentation](https://tailwindcss.com/docs)
-- [shadcn/ui Documentation](https://ui.shadcn.com/)
+## Contact
 
-## 📧 Contact
-
-For questions and support, please reach out to our team or create an issue in this repository.
+For questions and support, please reach out to our team(Tribe) or create an issue in this repository.
 
 ---
 
 <div align="center">
-  <p>Built with ❤️ for the Sui ecosystem</p>
+  <p>Building with ❤️ for the Sui ecosystem</p>
 </div>
