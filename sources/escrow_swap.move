@@ -1,22 +1,24 @@
 module walscribe::escrow_swap;
 
 use escrow::lock::{Locked, Key};
+use sui::object::{self, UID};
+use sui::transfer;
 
-/// An object held in escrow
+
+public struct Locked<T: store> has key, store {
+    id: UID,
+    key: ID,
+    obj: T,
+}
+
 public struct Escrow<T: key + store> has key {
     id: UID,
-    /// Owner of `escrowed`
     sender: address,
-    /// Intended recipient
     recipient: address,
-    /// The ID of the key that opens the lock on the object sender wants
-    /// from recipient.
-    exchange_key: ID,
-    /// The ID of the key that locked the escrowed object, before it was
-    /// escrowed.
+    recipient_exchange_key: ID,
+    /// The ID of the key that locked the escrowed object, before it was escrowed.
     escrowed_key: ID,
-    /// The escrowed object.
-    escrowed: T,
+    object_escrowed: T,
 }
 
 const EMismatchSenderAndRecipient: u64 = 0;
@@ -28,73 +30,72 @@ public fun create<T: key + store>(
     locked: Locked<T>,
     exchange_key: ID,
     recipient: address,
-    custodian: address,
+    verifier: address,
     ctx: &mut TxContext,
 ) {
     let escrow = Escrow {
         id: object::new(ctx),
         sender: ctx.sender(),
         recipient,
-        exchange_key,
+        recipient_exchange_key,
         escrowed_key: object::id(&key),
-        escrowed: locked.unlock(key),
+        object_escrowed: locked.unlock(key),
     };
 
-    transfer::transfer(escrow, custodian);
+    transfer::transfer(escrow, verifier);
 }
 
 /// Function for custodian (trusted third-party) to perform a swap between
 /// two parties.  Fails if their senders and recipients do not match, or if
 /// their respective desired objects do not match.
-public fun swap<T: key + store, U: key + store>(obj1: Escrow<T>, obj2: Escrow<U>) {
-    let Escrow {
-        id: id1,
-        sender: sender1,
-        recipient: recipient1,
-        exchange_key: exchange_key1,
-        escrowed_key: escrowed_key1,
-        escrowed: escrowed1,
-    } = obj1;
+    public fun swap<T: key + store, U: key + store>(owner: Escrow<T>, recipient: Escrow<U>) {
+        let Escrow {
+            id: id1,
+            sender: sender1,
+            recipient: recipient1,
+            exchange_key: exchange_key1,
+            escrowed_key: escrowed_key1,
+            escrowed: object_escrowed,
+        } = owner;
 
-    let Escrow {
-        id: id2,
-        sender: sender2,
-        recipient: recipient2,
-        exchange_key: exchange_key2,
-        escrowed_key: escrowed_key2,
-        escrowed: escrowed2,
-    } = obj2;
-    id1.delete();
-    id2.delete();
+        let Escrow {
+            id: id2,
+            sender: sender2,
+            recipient: recipient2,
+            exchange_key: exchange_key2,
+            escrowed_key: escrowed_key2,
+            escrowed: escrowed2,
+        } = recipient;
+        id1.delete();
+        id2.delete();
 
-    // Make sure the sender and recipient match each other
-    assert!(sender1 == recipient2, EMismatchedSenderRecipient);
-    assert!(sender2 == recipient1, EMismatchedSenderRecipient);
+        // Make sure the sender and recipient match each other
+        assert!(sender1 == recipient2, EMismatchSenderAndRecipient);
+        assert!(sender2 == recipient1, EMismatchSenderAndRecipient);
 
-    // Make sure the objects match each other and haven't been modified
-    // (they remain locked).
-    assert!(escrowed_key1 == exchange_key2, EMismatchedExchangeObject);
-    assert!(escrowed_key2 == exchange_key1, EMismatchedExchangeObject);
+        // Make sure the objects match each other and haven't been modified (they remain locked).
+        assert!(escrowed_key1 == exchange_key2, EMismatchExchangeObject);
+        assert!(escrowed_key2 == exchange_key1, EMismatchExchangeObject);
 
-    // Do the actual swap
-    transfer::public_transfer(escrowed1, recipient1);
-    transfer::public_transfer(escrowed2, recipient2);
-}
+        // Do the actual swap
+        transfer::public_transfer(escrowed1, recipient1);
+        transfer::public_transfer(escrowed2, recipient2);
+    }
 
 /// The custodian can always return an escrowed object to its original
 /// owner.
-public fun return_to_sender<T: key + store>(obj: Escrow<T>) {
-    let Escrow {
-        id,
-        sender,
-        recipient: _,
-        exchange_key: _,
-        escrowed_key: _,
-        escrowed,
-    } = obj;
-    id.delete();
-    transfer::public_transfer(escrowed, sender);
-}
+    public fun return_to_sender<T: key + store>(obj: Escrow<T>) {
+        let Escrow {
+            id,
+            sender,
+            recipient: _,
+            exchange_key: _,
+            escrowed_key: _,
+            escrowed,
+        } = obj;
+        id.delete();
+        transfer::public_transfer(escrowed, sender);
+    }
 
 
     // Alice locks the object they want to trade
