@@ -4,7 +4,6 @@ use escrow::lock::{Locked, Key};
 use sui::object::{self, UID};
 use sui::transfer;
 
-
 public struct Locked<T: store> has key, store {
     id: UID,
     key: ID,
