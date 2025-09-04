@@ -1,21 +1,28 @@
+#[allow(unused_variable)]
 module walscribe::escrow_swap;
 
-    use sui::object::UID;
-    use sui::transfer;
+    // use sui::object::UID;
+    // use sui::transfer;
     use sui::dynamic_object_field as dof;
     use sui::event;
-    use sui::coin::Coin;
+    //use sui::coin::Coin;
     
-
     public struct Locked<T: store> has key, store {
         id: UID,
         key: ID,
         obj: T,
     }
 
-    public struct Key<T: store> has key, store {
+    public struct Key<phantom T: store> has key, store {
         id: UID,
         key: ID,
+    }
+
+    public struct LockDestroyed has drop, copy, store {
+        lock_id: ID,
+    }
+
+    public struct LockedObjectKey has copy, drop, store {
     }
 
     public struct Escrow<T: key + store> has key {
@@ -32,14 +39,13 @@ module walscribe::escrow_swap;
     const EMismatchExchangeObject: u64 = 1;
     const ELockKeyMismatch: u64 = 2;
 
-
-    public fun create<T: key + store>(
+    public fun create<T: key + store + drop>(
         key: Key<T>,
         locked: Locked<T>,
         recipient_exchange_key: ID,
         recipient: address,
         verifier: address,
-        created_at: u64,
+        //created_at: u64,
         ctx: &mut TxContext,
     ) {
         let escrow = Escrow {
@@ -48,16 +54,9 @@ module walscribe::escrow_swap;
             recipient,
             recipient_exchange_key: recipient_exchange_key,
             escrowed_key: object::id(&key),
-            object_escrowed: unlock(locked, key),   // unlock(locked, key),
+            object_escrowed: unlock(locked, key),   
         };
         transfer::transfer(escrow, verifier);
-    }
-
-    public struct LockDestroyed has drop, copy, store {
-        lock_id: ID,
-    }
-
-    public struct LockedObjectKey has copy, drop, store {
     }
 
     public fun unlock<T: key + store + drop>(mut locked: Locked<T>, key: Key<T>): T {
@@ -72,9 +71,7 @@ module walscribe::escrow_swap;
         let Locked { id, key, obj } = locked;
         id.delete();
         obj
-    
     }
-
 
     /// Function for custodian (trusted third-party) to perform a swap between
     /// two parties.  Fails if their senders and recipients do not match, or if
@@ -120,7 +117,7 @@ module walscribe::escrow_swap;
             sender,
             recipient: _,
             recipient_exchange_key: _,
-            escrowed_key: escrowed_key,
+            escrowed_key: _escrowed_key,
             object_escrowed: object_escrowed,
         } = obj;
         id.delete();
