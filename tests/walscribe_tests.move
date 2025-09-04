@@ -4,14 +4,11 @@ use sui::transfer;
 
 #[test_only]
 use sui::coin::{Self, Coin};
-#[test_only]
 use sui::sui::SUI;
-#[test_only]
 use sui::test_scenario::{Self as ts, Scenario};
 
 #[test_only]
 use 0x0::lock;
-
 
 #[test_only]
 const ALICE: address = @0xA;
