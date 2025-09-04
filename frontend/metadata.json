@@ -1,0 +1,5 @@
+{
+  "name": "Copy of Esca - Blockchain Escrow Swap",
+  "description": "A secure and modern frontend for a blockchain escrow swap application, allowing users to lock assets, manage escrows, and view transaction history with a seamless Slush Wallet integration.",
+  "requestFramePermissions": []
+}

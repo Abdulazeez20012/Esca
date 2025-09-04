@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Esca - Blockchain Escrow Swap</title>
+    <style>
+      @keyframes spin-clockwise {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      @keyframes spin-counter-clockwise {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(-360deg); }
+      }
+      @keyframes pulse-glow {
+        0%, 100% { 
+          transform: scale(1);
+          filter: drop-shadow(0 0 15px rgba(219, 39, 119, 0.7));
+        }
+        50% { 
+          transform: scale(1.05);
+          filter: drop-shadow(0 0 25px rgba(219, 39, 119, 1));
+        }
+      }
+
+      /* For a decorative ring and the avatar orbit container */
+      .animate-spin-slow {
+        animation: spin-clockwise 20s linear infinite;
+      }
+
+      /* To keep avatars upright while their container spins */
+      .animate-spin-slow-reverse-synced {
+        animation: spin-counter-clockwise 20s linear infinite;
+      }
+
+      /* For the other decorative ring with a different speed */
+      .animate-spin-slow-reverse {
+        animation: spin-counter-clockwise 25s linear infinite;
+      }
+      
+      .animate-pulse-glow {
+        animation: pulse-glow 4s ease-in-out infinite;
+      }
+
+      @keyframes marquee {
+        0% { transform: translateX(0%); }
+        100% { transform: translateX(-50%); }
+      }
+
+      .animate-marquee {
+        animation: marquee 30s linear infinite;
+        will-change: transform;
+      }
+      
+      [data-hover-paused="true"]:hover .animate-marquee {
+        animation-play-state: paused;
+      }
+      
+      @keyframes progress-bar {
+        from { width: 0%; }
+        to { width: 100%; }
+      }
+    </style>
+  </head>
+  <body class="bg-black text-gray-200">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
